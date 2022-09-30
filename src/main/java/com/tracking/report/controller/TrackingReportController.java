@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tracking.report.exception.CustomFileNotFoundException;
+import com.tracking.report.exception.MiscException;
 import com.tracking.report.service.DataLoadService;
 
 @RestController
@@ -16,7 +18,7 @@ public class TrackingReportController {
 	DataLoadService dataLoadservice;
 	
 	@PostMapping("loadData")
-	public ResponseEntity<String> loadDataFromFileToDB(){
+	public ResponseEntity<String> loadDataFromFileToDB() throws CustomFileNotFoundException, MiscException{
 		String filepath="src/main/resources/data_new.csv";
 		dataLoadservice.loadData(filepath);
 		return ResponseEntity.ok("data refreshed");

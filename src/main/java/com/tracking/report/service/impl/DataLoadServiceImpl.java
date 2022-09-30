@@ -1,23 +1,19 @@
 package com.tracking.report.service.impl;
 
-import java.io.BufferedReader;
-
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.apache.commons.lang3.StringUtils;
+
 import com.opencsv.CSVReader;
+import com.tracking.report.exception.CustomFileNotFoundException;
+import com.tracking.report.exception.MiscException;
 import com.tracking.report.model.DeviceData;
 import com.tracking.report.repository.TrackingReportRepo;
 import com.tracking.report.service.DataLoadService;
@@ -28,7 +24,7 @@ public class DataLoadServiceImpl implements DataLoadService {
 	@Autowired
 	TrackingReportRepo trackingReportRepo;
 
-	public String loadData(String filePath) {
+	public String loadData(String filePath) throws CustomFileNotFoundException, MiscException {
 
 		try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
 			List<DeviceData> list1 = new ArrayList<>();
@@ -48,9 +44,11 @@ public class DataLoadServiceImpl implements DataLoadService {
 				list1.add(deviceData);
 				trackingReportRepo.save(deviceData);
 			});
+		} catch (FileNotFoundException e) {
+			throw new CustomFileNotFoundException("ERROR: no data file found", e);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new MiscException("ERROR: A technical exception occurred", e);
 		}
-		return "Success";
+		return "data refreshed";
 	}
 }
