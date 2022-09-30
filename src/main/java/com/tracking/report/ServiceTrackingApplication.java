@@ -1,4 +1,4 @@
-package com.tracking.servicetracking;
+package com.tracking.report;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
